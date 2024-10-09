@@ -3,7 +3,7 @@ name: Release geosite-direct.srs
 on:
   push:
     branches:
-      - main
+      - main # 或者你当前的分支名称
 
 jobs:
   release:
@@ -19,21 +19,21 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v2
+        uses: actions/create-release@v1 # 更新为 v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.current_date }}
+          tag_name: ${{ env.current_date }} # 使用日期作为标签
           release_name: Release ${{ env.current_date }}
           draft: false
           prerelease: false
 
       - name: Upload geosite-direct.srs to release
-        uses: actions/upload-release-asset@v2
+        uses: actions/upload-release-asset@v1 # 更新为 v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./geosite-direct.srs # 确保这个路径是正确的
+          asset_path: ./geosite-direct.srs
           asset_name: geosite-direct.srs
           asset_content_type: application/octet-stream
