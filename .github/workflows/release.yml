@@ -1,0 +1,39 @@
+name: Release geosite-direct.srs
+
+on:
+  push:
+    branches:
+      - main # 或者你当前的分支名称
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get current date and time
+        id: date
+        run: |
+          echo "current_date=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.current_date }} # 使用日期作为标签
+          release_name: Release ${{ env.current_date }}
+          draft: false
+          prerelease: false
+
+      - name: Upload geosite-direct.srs to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /sb/geosite-direct.srs/geosite-direct.srs
+          asset_name: geosite-direct.srs
+          asset_content_type: application/octet-stream
